@@ -6,14 +6,14 @@ GET http://localhost:8108/api/l1/params/name/Tiago/age/18/club/Porto
 
 ###
 
-GET http://localhost:8108/api/l1/query?name=Tiago&age=18&club=Porto
+GET http://localhost:8108/api/l1/query?name=Filipa&age=41&club=Benfica
 
 ###
 
 GET http://localhost:8108/api/l1/headers
-Name: Tiago
-Age: 18
-CLub: Porto
+Name: Marcelo
+Age: 76
+CLub: Braga
 
 ###
 

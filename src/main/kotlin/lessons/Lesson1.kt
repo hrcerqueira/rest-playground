@@ -1,65 +1,64 @@
 package io.hnr.restp.lessons
 
-import io.ktor.http.*
+import io.github.serpro69.kfaker.commerce.CommerceFaker
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.*
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Person(val name: String, val age: Int, val club: String)
 
 fun Route.lesson1() {
 
+    val food = CommerceFaker().food
+
     get("/param/name/{name}") {
         val name = call.parameters["name"]!!
-        call.respondText("Hello $name")
+        call.respondText("Hello $name, do you like ${food.dish()}?")
+    }
+
+    val goodClubs = listOf("Porto", "FCP")
+    val badClubs = listOf("Benfica", "SLB", "Sporting", "SCP")
+
+    fun List<String>.containsIgnoreCase(other: String) = this.any { it.equals(other, ignoreCase = true) }
+
+    fun StringValues.readPerson(): Person {
+        val name = this["name"] ?: throw BadRequestException("Missing name")
+        val age = (this["age"] ?: throw BadRequestException("Missing age"))
+            .toIntOrNull() ?: throw BadRequestException("Invalid age")
+
+        val club = this["club"] ?: throw BadRequestException("Missing club")
+        return Person(name, age, club)
+    }
+
+    suspend fun RoutingContext.responseWithGreeting(person: Person) = with(person) {
+        val response  = when {
+            goodClubs.containsIgnoreCase(club)
+                -> "Hey Hey ${name}, you have impeccable taste in football clubs!"
+            badClubs.containsIgnoreCase(club) && age < 12 -> "Hi ${name}, I think you will grow out of liking ${club} very soon."
+            badClubs.containsIgnoreCase(club) -> "Hey ${name}, I am not into ${club}, like, at all!!"
+            else -> "Hey ${name}, I am not sure I like ${club}... Not even sure I know it!"
+        }
+        call.respondText(response)
     }
 
     get("/params/name/{name}/age/{age}/club/{club}") {
-
-        val name = call.parameters["name"]!!
-        val age = call.parameters["age"]!!
-
-        age.toIntOrNull() ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Invalid age" }
-
-
-        val club = call.parameters["club"]!!
-        call.respondText("Your name is $name, your age is $age and your club is $club")
+       responseWithGreeting(call.parameters.readPerson())
     }
 
     get("/query") {
-
-        val name = call.queryParameters["name"] ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Missing name" }
-        val age = call.queryParameters["age"] ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Missing name" }
-
-        age.toIntOrNull() ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Invalid age" }
-
-
-        val club = call.queryParameters["club"] ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Missing name" }
-
-        call.respondText("Your name is $name, your age is $age and your club is $club")
+        responseWithGreeting(call.request.queryParameters.readPerson())
     }
 
     get("/headers") {
-
-        val name = call.request.headers["name"] ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Missing name" }
-        val age = call.request.headers["age"] ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Missing name" }
-
-        age.toIntOrNull() ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Invalid age" }
-
-
-        val club = call.request.headers["club"] ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Missing name" }
-
-        call.respondText("Your name is $name, your age is $age and your club is $club")
+        responseWithGreeting(call.request.headers.readPerson())
     }
 
 
     get("/structured/name/{name}/age/{age}/club/{club}") {
-
-        val name = call.parameters["name"]!!
-        val age = call.parameters["age"]!!.toIntOrNull() ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Invalid age" }
-
-
-        val club = call.parameters["club"]!!
-        val person = Person(name, age, club)
-
-        call.respond(person)
+        call.respond(call.parameters.readPerson())
     }
 
 

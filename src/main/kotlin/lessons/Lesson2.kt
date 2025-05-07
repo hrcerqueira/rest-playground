@@ -1,59 +1,62 @@
 package io.hnr.restp.lessons
 
+import io.github.serpro69.kfaker.humor.HumorFaker
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Person(val name: String, val age: Int, val club: String)
-
-val people = listOf<Person>(
-    Person("Tiago", 18, "Porto"),
-    Person("Hernâni", 42, "Porto"),
-    Person("FIlipe", 41, "Benfica")
+data class Sentence(
+    val id: Int?,
+    val who: Person,
+    val sentence: String
 )
 
-@Serializable
-data class Pet(val id: Int, val name: String)
-
-val pets = listOf<Pet>(
-    Pet(1, "Phineas"),
-    Pet(2, "Candace"),
-    Pet(3, "Preto"),
-    Pet(4, "Branquinho"),
-    Pet(5, "Robin"),
-    Pet(6, "Wally"),
-    Pet(7, "Miguel"),
-    Pet(8, "Lizzy"),
-    Pet(9, "Eleven"),
-    Pet(10, "Kitana"),
+val people = mapOf<String, Person>(
+    "chuck" to Person("Chuck Norris", 85, "Expendables"),
+    "mitch" to Person("Mitch Hedberg", 37, "Night Club"),
+    "jack" to Person("Jack Handey", 76, "Chess Club"),
+    "chiquito" to Person("Chiquito", 65, "Mexico?")
 )
+
+val humor = HumorFaker()
+
+val sentences = listOf(
+    1.until(6).map { Sentence(it, people["chuck"]!!, humor.chuckNorris.fact()) },
+    1.until(6).map { Sentence(it + 5, people["mitch"]!!, humor.mitchHedberg.quote()) },
+    1.until(6).map { Sentence(it + 10, people["jack"]!!, humor.jackHandey.quote()) },
+    1.until(6).map { Sentence(it + 15, people["chiquito"]!!, humor.chiquito.sentences()) },
+).flatten()
 
 fun Route.lesson2() {
 
+    get("/people") {
+        call.respond(people)
+    }
+
     get("/person/{name}") {
         val name = call.parameters["name"]!!
-        val person = people.find { it.name == name } ?: return@get call.respondText(status = HttpStatusCode.NotFound) { "Person not found" }
+        val person = people[name] ?: return@get call.respondText(status = HttpStatusCode.NotFound) { "Person not found" }
 
         call.respond(person)
     }
 
-    get("/pet/{id}") {
+    get("/sentence/{id}") {
         val id = call.parameters["id"]!!.toIntOrNull() ?: return@get call.respondText(status = HttpStatusCode.BadRequest) { "Invalid id" }
-        val pet = pets.find { it.id == id } ?: return@get call.respondText(status = HttpStatusCode.NotFound) { "Pet not found" }
-        call.respond(pet)
+        val sentence = sentences.find { it.id == id } ?: return@get call.respondText(status = HttpStatusCode.NotFound) { "Sentence not found" }
+        call.respond(sentence)
     }
 
-    get("/pet") {
+    get("/sentence") {
         val search = call.queryParameters["search"]
 
-        val petList = if (search != null) {
-            pets.filter { it.name.contains(search, ignoreCase = true) }
+        val list = if (search != null) {
+            sentences.filter { it.sentence.contains(search, ignoreCase = true) }
         } else {
-            pets
+            sentences
         }
-        call.respond(petList)
+        call.respond(list)
     }
 }
 

@@ -1,18 +1,22 @@
-GET http://localhost:8108/api/l2/person/Tiago
+GET http://localhost:8108/api/l2/person/mitch
 Accept: application/json
 
 ###
 
-GET http://localhost:8108/api/l2/person/Tiago
+GET http://localhost:8108/api/l2/person/jack
 Accept: application/xml
 
 ###
 
-GET http://localhost:8108/api/l2/pet/10
+GET http://localhost:8108/api/l2/people
 
 ###
 
-GET http://localhost:8108/api/l2/pet
+GET http://localhost:8108/api/l2/sentence/10
+
 ###
 
-GET http://localhost:8108/api/l2/pet?search=l
+GET http://localhost:8108/api/l2/sentence
+###
+
+GET http://localhost:8108/api/l2/sentence?search=like
