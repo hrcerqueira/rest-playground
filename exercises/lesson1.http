@@ -1,0 +1,20 @@
+GET http://localhost:8108/api/l1/param/name/Tiago
+
+###
+
+GET http://localhost:8108/api/l1/params/name/Tiago/age/18/club/Porto
+
+###
+
+GET http://localhost:8108/api/l1/query?name=Tiago&age=18&club=Porto
+
+###
+
+GET http://localhost:8108/api/l1/headers
+Name: Tiago
+Age: 18
+CLub: Porto
+
+###
+
+GET http://localhost:8108/api/l1/structured/name/Tiago/age/18/club/Porto

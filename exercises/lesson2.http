@@ -1,0 +1,18 @@
+GET http://localhost:8108/api/l2/person/Tiago
+Accept: application/json
+
+###
+
+GET http://localhost:8108/api/l2/person/Tiago
+Accept: application/xml
+
+###
+
+GET http://localhost:8108/api/l2/pet/10
+
+###
+
+GET http://localhost:8108/api/l2/pet
+###
+
+GET http://localhost:8108/api/l2/pet?search=l
