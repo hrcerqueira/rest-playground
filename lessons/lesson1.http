@@ -1,3 +1,7 @@
+GET http://localhost:8108/api/l1/
+
+###
+
 GET http://localhost:8108/api/l1/param/name/Tiago
 
 ###
@@ -13,7 +17,7 @@ GET http://localhost:8108/api/l1/query?name=Filipa&age=41&club=Benfica
 GET http://localhost:8108/api/l1/headers
 Name: Marcelo
 Age: 76
-CLub: Braga
+Club: Braga
 
 ###
 

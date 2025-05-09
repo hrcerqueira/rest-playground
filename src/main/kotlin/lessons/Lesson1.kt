@@ -1,6 +1,7 @@
 package io.hnr.restp.lessons
 
 import io.github.serpro69.kfaker.commerce.CommerceFaker
+import io.github.serpro69.kfaker.tv.TvShowsFaker
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -13,6 +14,11 @@ data class Person(val name: String, val age: Int, val club: String)
 fun Route.lesson1() {
 
     val food = CommerceFaker().food
+    val southPark = TvShowsFaker().southPark
+
+    get("/") {
+        call.respondText("Welcome to Lesson 1! Here's a South Park quote for you: ${southPark.quotes()}")
+    }
 
     get("/param/name/{name}") {
         val name = call.parameters["name"]!!

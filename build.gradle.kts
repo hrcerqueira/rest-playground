@@ -34,6 +34,7 @@ dependencies {
     implementation("io.github.serpro69:kotlin-faker:$faker_version")
     implementation("io.github.serpro69:kotlin-faker-commerce:$faker_version")
     implementation("io.github.serpro69:kotlin-faker-humor:$faker_version")
+    implementation("io.github.serpro69:kotlin-faker-tvshows:$faker_version")
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
